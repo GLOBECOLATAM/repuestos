@@ -339,6 +339,61 @@ h2.title {
 }
 .icon-btn:hover { border-color: var(--accent); color: var(--navy); }
 
+/* ====== User info card (welcome banner after login) ====== */
+.user-info-card {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  margin-bottom: 10px;
+  color: white;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+.user-info-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 140px; height: 140px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 60%);
+  pointer-events: none;
+}
+.user-info-card .uic-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  margin-bottom: 2px;
+}
+.user-info-card .uic-id {
+  font-size: 12px;
+  opacity: 0.75;
+  letter-spacing: 0.4px;
+  font-weight: 500;
+}
+.user-info-card .uic-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 14px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+.user-info-card .uic-item .uic-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.6;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.user-info-card .uic-item .uic-value {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1px;
+  line-height: 1.3;
+}
+
 /* ====== Form header ====== */
 .form-header { padding: 14px 4px 22px; }
 .form-header .eyebrow { color: var(--navy-light); }
@@ -656,17 +711,16 @@ h2.title {
       <div class="eyebrow">Bienvenido</div>
       <h1 class="title">Identifícate</h1>
       <p class="muted" style="margin-bottom: 22px;">
-        Ingresa tu número de WhatsApp para empezar.
+        Ingresa tu número de cédula para empezar.
       </p>
 
       <div class="field">
-        <label class="field-label" for="phone-input">Número de WhatsApp <span class="req">*</span></label>
-        <div class="input-group">
-          <span class="prefix">+</span>
-          <input id="phone-input" class="input" type="tel" inputmode="numeric"
-                 placeholder="593978627143" autocomplete="tel" autofocus>
-        </div>
-        <div class="field-hint">Con código de país, sin espacios (ej: 593 + número)</div>
+        <label class="field-label" for="cedula-input">Número de cédula <span class="req">*</span></label>
+        <input id="cedula-input" class="input" type="tel" inputmode="numeric"
+               placeholder="1726567354" autocomplete="off" autofocus
+               maxlength="10"
+               style="letter-spacing: 1.5px; font-weight: 600; font-size: 17px;">
+        <div class="field-hint">10 dígitos, sin guiones ni espacios</div>
       </div>
 
       <button class="btn primary large" id="btn-login">Continuar →</button>
@@ -689,6 +743,29 @@ h2.title {
       </div>
       <button class="icon-btn" id="btn-logout" title="Cambiar usuario">⏻</button>
     </header>
+
+    <div class="user-info-card" id="user-info-card">
+      <div class="uic-name" id="uic-name">—</div>
+      <div class="uic-id" id="uic-id">—</div>
+      <div class="uic-grid">
+        <div class="uic-item">
+          <div class="uic-label">Cargo</div>
+          <div class="uic-value" id="uic-cargo">—</div>
+        </div>
+        <div class="uic-item">
+          <div class="uic-label">Cédula</div>
+          <div class="uic-value" id="uic-cedula">—</div>
+        </div>
+        <div class="uic-item">
+          <div class="uic-label">Sede</div>
+          <div class="uic-value" id="uic-ciudad">—</div>
+        </div>
+        <div class="uic-item">
+          <div class="uic-label">Proyecto</div>
+          <div class="uic-value" id="uic-proyecto">—</div>
+        </div>
+      </div>
+    </div>
 
     <div class="form-header">
       <div class="eyebrow">Acta de Entrega-Recepción</div>
@@ -896,8 +973,6 @@ const CONFIG = {
   // Sheet de identificaciones (BASE DE IDENTIFICACIONES)
   SHEET_ID: '1m_iQrfb63NkGJwS4DHthb2M8DsyxzWl3XRxJzXctSqU',
   SHEET_NAME: 'USUARIOS',
-  // Columna donde está el número de WhatsApp (E = Numero)
-  PHONE_COLUMN: 'E',
   // Permiso necesario para usar este formulario
   REQUIRED_PERMISSION: 'salida_repuesto',
 
@@ -905,7 +980,7 @@ const CONFIG = {
   SUBMIT_ENDPOINT: 'https://paneln8n.globecosmart.com/webhook/form-salida-repuesto',
 
   // localStorage key
-  LS_USER_KEY: 'globeco_repuestos_user_v1'
+  LS_USER_KEY: 'globeco_repuestos_user_v2'
 };
 
 // =============================================================
@@ -945,35 +1020,55 @@ function getInitials(name) {
 }
 
 // =============================================================
-// User lookup via gviz JSON
+// User lookup via gviz JSON — busca por cédula
 // =============================================================
-async function lookupUserByPhone(phone) {
-  const cleanPhone = phone.replace(/[^\d]/g, '');
-  if (cleanPhone.length < 8) {
-    throw new Error('Número demasiado corto');
+async function lookupUserByCedula(cedula) {
+  const cleanCedula = String(cedula).replace(/[^\d]/g, '');
+  if (cleanCedula.length < 8) {
+    throw new Error('Cédula demasiado corta');
   }
 
-  // gviz query
-  const query = `select * where ${CONFIG.PHONE_COLUMN}='${cleanPhone}'`;
+  // Fetch all rows — no usamos WHERE en gviz porque el tipo de dato (numérico vs texto)
+  // puede causar problemas. Mejor traer todo y filtrar client-side.
   const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?` +
-              `tqx=out:json&sheet=${encodeURIComponent(CONFIG.SHEET_NAME)}&tq=${encodeURIComponent(query)}`;
+              `tqx=out:json&sheet=${encodeURIComponent(CONFIG.SHEET_NAME)}`;
 
   const resp = await fetch(url);
   const text = await resp.text();
 
-  // gviz wraps response in: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
   const match = text.match(/setResponse\((\{[\s\S]+\})\)/);
-  if (!match) throw new Error('Respuesta inesperada del servidor');
+  if (!match) throw new Error('No se pudo leer la base de identificaciones');
   const data = JSON.parse(match[1]);
 
-  if (!data.table || !data.table.rows || data.table.rows.length === 0) {
-    throw new Error('Número no registrado en el sistema');
+  if (!data.table || !data.table.rows) {
+    throw new Error('La base de identificaciones está vacía o no responde');
   }
 
   const cols = data.table.cols.map(c => (c.label || '').trim());
-  const row = data.table.rows[0].c.map(c => (c && c.v !== null && c.v !== undefined) ? String(c.v) : '');
 
-  // Mapeo de columnas → campos
+  // Buscar índice de la columna Cédula
+  const cedulaIdx = cols.findIndex(c => {
+    const n = c.toLowerCase();
+    return n === 'cedula' || n === 'cédula';
+  });
+  if (cedulaIdx < 0) {
+    throw new Error('No se encontró la columna Cédula en la base');
+  }
+
+  // Buscar fila que coincida — normalizando ambos lados a solo dígitos
+  const matchingRow = data.table.rows.find(row => {
+    const cell = row.c[cedulaIdx];
+    if (!cell || cell.v === null || cell.v === undefined) return false;
+    const stored = String(cell.v).replace(/[^\d]/g, '');
+    return stored === cleanCedula;
+  });
+
+  if (!matchingRow) {
+    throw new Error('Cédula no registrada en el sistema');
+  }
+
+  const row = matchingRow.c.map(c => (c && c.v !== null && c.v !== undefined) ? String(c.v) : '');
+
   const get = (label) => {
     const i = cols.findIndex(c => c.toLowerCase() === label.toLowerCase());
     return i >= 0 ? row[i] : '';
@@ -981,10 +1076,10 @@ async function lookupUserByPhone(phone) {
 
   const user = {
     id_gl: get('ID'),
-    nombre: get('Nombres') + ' ' + get('Apellidos'),
+    nombre: (get('Nombres') + ' ' + get('Apellidos')).trim(),
     alias: get('Alias'),
-    phone: cleanPhone,
-    cedula: get('Cedula'),
+    cedula: cleanCedula,
+    phone: String(get('Numero')).replace(/[^\d]/g, ''),
     correo: get('Correo'),
     proyecto: get('Proyecto empresa'),
     ciudad: get('Ciudad'),
@@ -994,10 +1089,9 @@ async function lookupUserByPhone(phone) {
   };
 
   if (user.estado && user.estado.toLowerCase() !== 'activo') {
-    throw new Error('Tu usuario no está activo');
+    throw new Error('Tu usuario no está activo. Contacta a tu administrador.');
   }
 
-  // Validar permiso
   const permList = (user.permisos || '').toLowerCase().split(',').map(s => s.trim());
   if (!permList.includes(CONFIG.REQUIRED_PERMISSION.toLowerCase())) {
     throw new Error('No tienes permiso para registrar salidas de repuesto');
@@ -1007,13 +1101,21 @@ async function lookupUserByPhone(phone) {
 }
 
 // =============================================================
-// Apply user to UI
+// Apply user to UI — rellena topbar + tarjeta de info
 // =============================================================
 function applyUser(user) {
   state.user = user;
+  // Topbar compacto
   $('#user-name').textContent = user.alias || user.nombre || '—';
-  $('#user-sub').textContent = (user.id_gl || '—') + ' · ' + (user.ciudad || '—');
+  $('#user-sub').textContent = (user.id_gl || '—') + ' · ' + (user.cargo || '—');
   $('#user-avatar').textContent = getInitials(user.alias || user.nombre);
+  // Tarjeta de info ampliada
+  $('#uic-name').textContent = user.nombre || '—';
+  $('#uic-id').textContent = (user.id_gl || '—') + (user.alias ? ' · ' + user.alias : '');
+  $('#uic-cargo').textContent = user.cargo || '—';
+  $('#uic-cedula').textContent = user.cedula || '—';
+  $('#uic-ciudad').textContent = user.ciudad || '—';
+  $('#uic-proyecto').textContent = user.proyecto || '—';
   localStorage.setItem(CONFIG.LS_USER_KEY, JSON.stringify(user));
   showScreen('screen-form');
 }
@@ -1022,7 +1124,7 @@ function applyUser(user) {
 // Login screen handlers
 // =============================================================
 async function handleLogin() {
-  const phone = $('#phone-input').value.trim();
+  const cedula = $('#cedula-input').value.trim();
   const btn = $('#btn-login');
   const errBox = $('#login-error');
   const errMsg = $('#login-error-msg');
@@ -1032,10 +1134,10 @@ async function handleLogin() {
   btn.textContent = 'Verificando...';
 
   try {
-    const user = await lookupUserByPhone(phone);
+    const user = await lookupUserByCedula(cedula);
     applyUser(user);
   } catch (e) {
-    errMsg.textContent = e.message || 'No pudimos verificar tu número';
+    errMsg.textContent = e.message || 'No pudimos verificar tu cédula';
     errBox.hidden = false;
   } finally {
     btn.disabled = false;
@@ -1044,7 +1146,7 @@ async function handleLogin() {
 }
 
 $('#btn-login').addEventListener('click', handleLogin);
-$('#phone-input').addEventListener('keydown', (e) => {
+$('#cedula-input').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') { e.preventDefault(); handleLogin(); }
 });
 
@@ -1057,7 +1159,7 @@ $('#btn-logout').addEventListener('click', () => {
   state.user = null;
   state.photos = {};
   $('#salida-form').reset();
-  $('#phone-input').value = '';
+  $('#cedula-input').value = '';
   showScreen('screen-login');
 });
 
@@ -1234,41 +1336,40 @@ $('#btn-new-salida').addEventListener('click', () => {
 });
 
 // =============================================================
-// Boot: check localStorage and URL param
+// Boot: check localStorage and URL params
 // =============================================================
 (async function boot() {
-  // Try URL param ?u=PHONE first
+  // Permitir auto-login via URL param ?c=CEDULA (si el bot manda el link así)
   const params = new URLSearchParams(location.search);
-  const phoneParam = params.get('u');
+  const cedulaParam = params.get('c');
 
-  if (phoneParam) {
-    // Auto-login by URL param
+  if (cedulaParam) {
     try {
-      const user = await lookupUserByPhone(phoneParam);
+      const user = await lookupUserByCedula(cedulaParam);
       applyUser(user);
       return;
     } catch (e) {
-      // Fall through to localStorage / login screen
-      console.warn('Auto-login by URL param failed:', e.message);
+      console.warn('Auto-login por URL falló:', e.message);
+      // sigue al fallback
     }
   }
 
-  // Try localStorage
+  // Intentar restaurar de localStorage
   const stored = localStorage.getItem(CONFIG.LS_USER_KEY);
   if (stored) {
     try {
       const user = JSON.parse(stored);
-      if (user && user.phone) {
-        // Refresh user data in background, but proceed immediately
+      if (user && user.cedula) {
+        // Mostrar de inmediato con datos cacheados
         applyUser(user);
-        // Verify still valid (async, silent on failure)
-        lookupUserByPhone(user.phone).then(applyUser).catch(() => {});
+        // Refrescar en segundo plano (silencioso si falla)
+        lookupUserByCedula(user.cedula).then(applyUser).catch(() => {});
         return;
       }
     } catch (e) { /* ignore */ }
   }
 
-  // Show login
+  // Mostrar login
   showScreen('screen-login');
 })();
 
