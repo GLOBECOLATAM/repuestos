@@ -1028,10 +1028,10 @@ async function lookupUserByCedula(cedula) {
     throw new Error('Cédula demasiado corta');
   }
 
-  // Fetch all rows — no usamos WHERE en gviz porque el tipo de dato (numérico vs texto)
-  // puede causar problemas. Mejor traer todo y filtrar client-side.
+  // Fetch all rows — usamos headers=1 para forzar primera fila como encabezados.
+  // Esto evita problemas cuando el sheet usa la feature Table.
   const url = `https://docs.google.com/spreadsheets/d/${CONFIG.SHEET_ID}/gviz/tq?` +
-              `tqx=out:json&sheet=${encodeURIComponent(CONFIG.SHEET_NAME)}`;
+              `tqx=out:json&headers=1&sheet=${encodeURIComponent(CONFIG.SHEET_NAME)}`;
 
   const resp = await fetch(url);
   const text = await resp.text();
@@ -1044,14 +1044,42 @@ async function lookupUserByCedula(cedula) {
     throw new Error('La base de identificaciones está vacía o no responde');
   }
 
-  const cols = data.table.cols.map(c => (c.label || '').trim());
+  // Labels pueden venir del header (label) o del id (A, B, C...) si gviz no detecta headers
+  const cols = data.table.cols.map(c => ({
+    label: (c.label || '').trim(),
+    id: (c.id || '').trim()
+  }));
 
-  // Buscar índice de la columna Cédula
-  const cedulaIdx = cols.findIndex(c => {
-    const n = c.toLowerCase();
-    return n === 'cedula' || n === 'cédula';
-  });
-  if (cedulaIdx < 0) {
+  // Debug — visible en consola del navegador
+  console.log('[Globeco] Columnas detectadas:', cols.map(c => c.label || c.id));
+
+  // Mapeo conocido de la sheet USUARIOS (en caso de que los labels fallen):
+  // A=ID, B=Nombres, C=Apellidos, D=Alias, E=Numero, F=Cedula,
+  // G=Correo, H=Proyecto empresa, I=Ciudad, J=Cargo, K=Permisos acceso, L=Estado
+  const POSICIONES = {
+    'ID': 0, 'Nombres': 1, 'Apellidos': 2, 'Alias': 3, 'Numero': 4,
+    'Cedula': 5, 'Correo': 6, 'Proyecto empresa': 7, 'Ciudad': 8,
+    'Cargo': 9, 'Permisos acceso': 10, 'Estado': 11
+  };
+
+  // Función que devuelve el índice de columna por label, con fallback a posición
+  const colIdx = (label) => {
+    const target = label.toLowerCase().replace(/[áéíóú]/g, m =>
+      ({á:'a',é:'e',í:'i',ó:'o',ú:'u'})[m]);
+    // 1) Buscar por label exacto (sin tildes, case-insensitive)
+    let i = cols.findIndex(c => {
+      const norm = (c.label || '').toLowerCase().replace(/[áéíóú]/g, m =>
+        ({á:'a',é:'e',í:'i',ó:'o',ú:'u'})[m]);
+      return norm === target;
+    });
+    if (i >= 0) return i;
+    // 2) Fallback a posición fija conocida
+    if (POSICIONES[label] !== undefined) return POSICIONES[label];
+    return -1;
+  };
+
+  const cedulaIdx = colIdx('Cedula');
+  if (cedulaIdx < 0 || cedulaIdx >= cols.length) {
     throw new Error('No se encontró la columna Cédula en la base');
   }
 
@@ -1070,8 +1098,8 @@ async function lookupUserByCedula(cedula) {
   const row = matchingRow.c.map(c => (c && c.v !== null && c.v !== undefined) ? String(c.v) : '');
 
   const get = (label) => {
-    const i = cols.findIndex(c => c.toLowerCase() === label.toLowerCase());
-    return i >= 0 ? row[i] : '';
+    const i = colIdx(label);
+    return (i >= 0 && i < row.length) ? row[i] : '';
   };
 
   const user = {
