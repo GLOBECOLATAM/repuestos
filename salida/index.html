@@ -927,7 +927,7 @@ h2.title {
         </div>
         <div class="success-title">¡Salida registrada!</div>
         <div class="or-badge" id="success-or-code">OR-XXX-YYYY-NNNN</div>
-        <div class="success-helper">El acta se envió también por WhatsApp</div>
+        <div class="success-helper">Descarga tu acta o registra una nueva salida</div>
 
         <div class="acta-preview" id="acta-preview" hidden>
           <img id="acta-preview-img" alt="Acta de Entrega">
@@ -1319,12 +1319,30 @@ async function handleSubmit(e) {
       body: JSON.stringify(payload)
     });
 
+    // Leer el body como texto primero — funciona para JSON y para errores HTML
+    const rawText = await resp.text();
+    console.log('[Globeco] Respuesta cruda del servidor:', resp.status, rawText);
+
     if (!resp.ok) {
-      throw new Error('Servidor respondió con error ' + resp.status);
+      // El servidor respondió con error. Intentar extraer mensaje útil.
+      let serverMsg = '';
+      try {
+        const errJson = JSON.parse(rawText);
+        serverMsg = errJson.message || errJson.error || JSON.stringify(errJson);
+      } catch {
+        serverMsg = rawText.slice(0, 200);
+      }
+      throw new Error(`Servidor ${resp.status}: ${serverMsg}`);
     }
 
-    const result = await resp.json();
-    // Expected response: { codigo_or, pdf_url, acta_preview_url? }
+    let result;
+    try {
+      result = JSON.parse(rawText);
+    } catch (parseErr) {
+      throw new Error('El servidor respondió con texto no-JSON: ' + rawText.slice(0, 200));
+    }
+
+    // Respuesta esperada: { codigo_or, pdf_url, acta_preview_url? }
     $('#success-or-code').textContent = result.codigo_or || 'OR-?';
     if (result.pdf_url) {
       $('#btn-download').href = result.pdf_url;
@@ -1337,7 +1355,7 @@ async function handleSubmit(e) {
     }
     showScreen('screen-success');
   } catch (e) {
-    console.error(e);
+    console.error('[Globeco] Error en submit:', e);
     $('#error-message').textContent = e.message || 'No pudimos completar el registro. Intenta de nuevo.';
     showScreen('screen-error');
   } finally {
