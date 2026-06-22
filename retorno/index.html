@@ -1,1 +1,1225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#1E3A5F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Retorno de Repuesto · Globeco Smart</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231E3A5F'/%3E%3Ctext x='32' y='44' font-family='system-ui' font-size='36' font-weight='800' fill='white' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E">
+
+<style>
+:root {
+  --navy: #1E3A5F;
+  --navy-light: #2E5A8F;
+  --navy-deep: #142847;
+  --accent: #4A7AB5;
+  --teal: #0E7C7B;
+
+  --bg: #F2F5FA;
+  --bg-grad: linear-gradient(180deg, #F4F6FA 0%, #E8EBF0 100%);
+  --surface: #FFFFFF;
+  --surface-alt: #F7F9FC;
+
+  --border: #DDE2E8;
+  --border-strong: #C6CFDA;
+
+  --text: #1A1A1A;
+  --text-strong: #0D1B2E;
+  --text-mute: #6B7280;
+  --text-faint: #9CA3AF;
+
+  --success: #15803D;
+  --success-bg: #D4EDDA;
+  --warning: #B45309;
+  --warning-bg: #FEF3C7;
+  --error: #B91C1C;
+  --error-bg: #FEE2E2;
+  --info: #1E40AF;
+  --info-bg: #DBEAFE;
+
+  --shadow-sm: 0 1px 2px rgba(30, 58, 95, 0.05);
+  --shadow-md: 0 4px 12px rgba(30, 58, 95, 0.08), 0 1px 3px rgba(30, 58, 95, 0.04);
+  --shadow-lg: 0 12px 32px rgba(30, 58, 95, 0.12), 0 4px 8px rgba(30, 58, 95, 0.06);
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  background-image: var(--bg-grad);
+  background-attachment: fixed;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% -10%, rgba(74, 122, 181, 0.10), transparent 50%),
+    radial-gradient(circle at 90% 110%, rgba(30, 58, 95, 0.06), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 20px 18px;
+  padding-top: max(20px, env(safe-area-inset-top));
+}
+
+.screen { display: none; animation: fade .35s var(--ease); }
+.screen.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ====== Brand block (login) ====== */
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 4px 32px;
+}
+.brand-mark {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 26px;
+  box-shadow: var(--shadow-md);
+}
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--navy);
+  letter-spacing: -0.3px;
+  line-height: 1;
+}
+.brand-sub {
+  font-size: 11px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ====== Card ====== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 26px 22px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(74, 122, 181, 0.10);
+  padding: 5px 11px;
+  border-radius: 99px;
+  margin-bottom: 14px;
+}
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.5px;
+  color: var(--text-strong);
+  margin-bottom: 6px;
+  line-height: 1.15;
+}
+.muted { color: var(--text-mute); font-size: 14px; }
+
+/* ====== Topbar ====== */
+.topbar {
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-md);
+}
+.user-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 14px;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  flex-shrink: 0;
+}
+.user-meta { flex: 1; min-width: 0; }
+.user-name { color: #fff; font-weight: 700; font-size: 14px; line-height: 1.2; }
+.user-sub { color: rgba(255,255,255,0.72); font-size: 11.5px; margin-top: 2px; letter-spacing: 0.2px; }
+.btn-logout {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+}
+
+/* ====== Fields ====== */
+.field { margin-bottom: 18px; }
+.field-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-strong);
+  letter-spacing: 0.2px;
+  margin-bottom: 7px;
+}
+.req { color: var(--error); }
+.input, .select, .textarea {
+  width: 100%;
+  padding: 13px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+  -webkit-appearance: none;
+}
+.input:focus, .select:focus, .textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(74, 122, 181, 0.15);
+}
+.textarea { resize: vertical; min-height: 84px; line-height: 1.45; }
+.select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236B7280' d='M6 7.5L0 1.5 1.5 0 6 4.5 10.5 0 12 1.5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+}
+.field-hint { font-size: 11.5px; color: var(--text-faint); margin-top: 6px; }
+
+/* ====== Photo uploader ====== */
+.photo-box {
+  position: relative;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--r-md);
+  padding: 22px 14px;
+  text-align: center;
+  background: var(--surface-alt);
+  cursor: pointer;
+  transition: border-color .15s var(--ease), background .15s var(--ease);
+}
+.photo-box:hover { border-color: var(--accent); background: rgba(74, 122, 181, 0.04); }
+.photo-box input[type=file] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer;
+}
+.photo-icon {
+  width: 44px; height: 44px;
+  background: rgba(30, 58, 95, 0.08);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 10px;
+  font-size: 20px;
+}
+.photo-label { font-size: 13px; font-weight: 600; color: var(--text-strong); }
+.photo-hint { font-size: 11.5px; color: var(--text-faint); margin-top: 4px; }
+.photo-box.has-image {
+  border-style: solid;
+  background: #fff;
+  padding: 8px;
+}
+.photo-box.has-image .photo-placeholder { display: none; }
+.photo-preview {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+  max-height: 260px;
+  object-fit: cover;
+}
+
+/* ====== Buttons ====== */
+.btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 18px;
+  border: none;
+  border-radius: var(--r-md);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: transform .12s var(--ease), box-shadow .15s var(--ease), background .15s var(--ease);
+}
+.btn:active { transform: translateY(1px); }
+.btn.primary {
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+.btn.primary:hover { box-shadow: var(--shadow-lg); }
+.btn.primary.large { padding: 16px 18px; font-size: 16px; }
+.btn.secondary {
+  background: var(--surface);
+  color: var(--text-strong);
+  border: 1.5px solid var(--border-strong);
+}
+.btn.success-btn {
+  background: linear-gradient(135deg, var(--success), #1A9E4D);
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ====== Alerts ====== */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-top: 14px;
+  line-height: 1.45;
+}
+.alert .icon { font-size: 16px; flex-shrink: 0; }
+.alert.error { background: var(--error-bg); color: var(--error); }
+.alert.warning { background: var(--warning-bg); color: var(--warning); }
+.alert.info { background: var(--info-bg); color: var(--info); }
+
+/* ====== OR badge ====== */
+.or-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--navy);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  font-family: var(--font-display);
+}
+
+/* ====== Salida summary card ====== */
+.summary-card {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  margin-bottom: 18px;
+}
+.summary-card .section-title {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-mute);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 14px;
+  font-size: 13px;
+}
+.summary-grid .k { color: var(--text-mute); font-weight: 500; }
+.summary-grid .v { color: var(--text-strong); font-weight: 600; }
+
+/* ====== Status chip ====== */
+.chip {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.chip.activa { background: var(--warning-bg); color: var(--warning); }
+.chip.cerrada { background: var(--success-bg); color: var(--success); }
+
+/* ====== Loading / spinner ====== */
+.loading-state {
+  text-align: center;
+  padding: 50px 20px;
+}
+.spinner {
+  width: 52px; height: 52px;
+  border: 4px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  margin: 0 auto 24px;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ====== Success state ====== */
+.success-state { text-align: center; padding: 30px 12px; }
+.success-circle {
+  width: 88px; height: 88px;
+  background: linear-gradient(135deg, var(--success), #1A9E4D);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 22px;
+  font-size: 44px;
+  color: #fff;
+  box-shadow: var(--shadow-lg);
+}
+.success-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 26px;
+  color: var(--text-strong);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.success-helper { color: var(--text-mute); font-size: 14px; margin-bottom: 26px; }
+
+/* ====== Submitting ====== */
+.submitting-title { font-family: var(--font-display); font-weight: 700; font-size: 20px; color: var(--text-strong); margin-bottom: 4px; }
+.submitting-sub { color: var(--text-mute); font-size: 13.5px; }
+
+@media (min-width: 600px) {
+  .card { padding: 30px 28px; }
+  .title { font-size: 30px; }
+}
+</style>
+</head>
+<body>
+
+<main id="app">
+
+  <!-- ========== Screen: LOGIN ========== -->
+  <section id="screen-login" class="screen active">
+    <div class="brand-block">
+      <div class="brand-mark">G</div>
+      <div>
+        <div class="brand-name">GLOBECO SMART</div>
+        <div class="brand-sub">Retorno de Repuesto</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Cerrar orden</div>
+      <h1 class="title">Identifícate</h1>
+      <p class="muted" style="margin-bottom: 22px;">
+        Ingresa tu número de cédula para registrar el retorno del repuesto.
+      </p>
+
+      <div class="field">
+        <label class="field-label" for="cedula-input">Número de cédula <span class="req">*</span></label>
+        <input id="cedula-input" class="input" type="tel" inputmode="numeric"
+               placeholder="1726567354" autocomplete="off" autofocus
+               maxlength="10"
+               style="letter-spacing: 1.5px; font-weight: 600; font-size: 17px;">
+        <div class="field-hint">10 dígitos, sin guiones ni espacios</div>
+      </div>
+
+      <button class="btn primary large" id="btn-login">Continuar →</button>
+      <div class="alert error" id="login-error" hidden>
+        <span class="icon">⚠️</span>
+        <span id="login-error-msg"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Screen: OR INPUT (cuando no viene ?or=) ========== -->
+  <section id="screen-or" class="screen">
+    <div class="topbar">
+      <div class="user-avatar" id="user-avatar-or">—</div>
+      <div class="user-meta">
+        <div class="user-name" id="user-name-or">—</div>
+        <div class="user-sub" id="user-sub-or">—</div>
+      </div>
+      <button class="btn-logout" id="btn-logout-or">Salir</button>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Localizar acta</div>
+      <h1 class="title">Código OR</h1>
+      <p class="muted" style="margin-bottom: 22px;">
+        Ingresa el código de la orden de reparación que viene en el acta de salida.
+      </p>
+
+      <div class="field">
+        <label class="field-label" for="or-input">Código OR <span class="req">*</span></label>
+        <input id="or-input" class="input" type="text" autocomplete="off"
+               placeholder="OR-UIO-2026-0001"
+               style="text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; font-size: 16px;">
+        <div class="field-hint">Formato: OR-CIUDAD-AÑO-NÚMERO</div>
+      </div>
+
+      <button class="btn primary large" id="btn-or-continue">Buscar orden →</button>
+      <div class="alert error" id="or-error" hidden>
+        <span class="icon">⚠️</span>
+        <span id="or-error-msg"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Screen: VALIDATING ========== -->
+  <section id="screen-validating" class="screen">
+    <div class="card">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <div class="submitting-title">Validando orden…</div>
+        <div class="submitting-sub" id="validating-or-code">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Screen: NOT FOUND ========== -->
+  <section id="screen-not-found" class="screen">
+    <div class="card">
+      <div style="text-align:center; padding: 30px 12px;">
+        <div style="width:84px;height:84px;background:var(--error-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:42px;">🔍</div>
+        <div class="submitting-title" style="font-size:22px;">Orden no encontrada</div>
+        <p class="muted" style="margin-top:8px;">
+          El código <strong id="not-found-code" style="color:var(--text-strong)">—</strong> no existe en el sistema. Revísalo o pídeselo a quien registró la salida.
+        </p>
+        <button class="btn primary" id="btn-try-again" style="margin-top:24px;">Intentar otro código</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Screen: ALREADY CLOSED ========== -->
+  <section id="screen-already-closed" class="screen">
+    <div class="card">
+      <div style="text-align:center; padding: 30px 12px;">
+        <div style="width:84px;height:84px;background:var(--success-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:42px;">✅</div>
+        <div class="submitting-title" style="font-size:22px;">Esta orden ya fue cerrada</div>
+        <p class="muted" style="margin-top:8px; line-height:1.6;">
+          La orden <strong id="closed-code" style="color:var(--text-strong)">—</strong> se cerró el <strong id="closed-date" style="color:var(--text-strong)">—</strong> por <strong id="closed-by" style="color:var(--text-strong)">—</strong>.
+        </p>
+        <button class="btn primary" id="btn-back-to-or" style="margin-top:24px;">Cerrar otra orden</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Screen: FORM ========== -->
+  <section id="screen-form" class="screen">
+    <div class="topbar">
+      <div class="user-avatar" id="user-avatar-form">—</div>
+      <div class="user-meta">
+        <div class="user-name" id="user-name-form">—</div>
+        <div class="user-sub" id="user-sub-form">—</div>
+      </div>
+      <button class="btn-logout" id="btn-logout-form">Salir</button>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin:14px 4px 14px;flex-wrap:wrap;gap:10px;">
+      <div style="font-family:var(--font-display);font-weight:800;color:var(--text-strong);font-size:18px;">Retorno de repuesto</div>
+      <span class="or-badge" id="form-or-badge">—</span>
+    </div>
+
+    <!-- Resumen de la salida (read-only) -->
+    <div class="card" style="padding: 20px 18px;">
+      <div class="eyebrow" style="background: rgba(180, 83, 9, 0.10); color: var(--warning);">
+        Datos de la salida
+      </div>
+      <div style="margin-bottom: 4px;">
+        <span class="chip activa">Activa</span>
+        <span class="muted" style="font-size:12px; margin-left:8px;" id="form-dias-mecanica">— días en mecánica</span>
+      </div>
+
+      <div class="summary-card" style="margin-top:14px;">
+        <div class="summary-grid">
+          <div class="k">Fecha salida</div><div class="v" id="sum-fecha">—</div>
+          <div class="k">Sede</div><div class="v" id="sum-sede">—</div>
+          <div class="k">Proyecto</div><div class="v" id="sum-proyecto">—</div>
+          <div class="k">Placa</div><div class="v" id="sum-placa">—</div>
+          <div class="k">Tipo de item</div><div class="v" id="sum-tipo">—</div>
+          <div class="k">Descripción</div><div class="v" id="sum-descripcion">—</div>
+          <div class="k">Motivo</div><div class="v" id="sum-motivo">—</div>
+          <div class="k">Taller</div><div class="v" id="sum-proveedor">—</div>
+          <div class="k">Lo entregó</div><div class="v" id="sum-entregante">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form del retorno -->
+    <div class="card">
+      <div class="eyebrow" style="background: rgba(21, 128, 61, 0.10); color: var(--success);">
+        Datos del retorno
+      </div>
+      <h2 style="font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--text-strong);margin-bottom:18px;">Completa la información</h2>
+
+      <div class="field">
+        <label class="field-label" for="trabajo-select">Trabajo realizado <span class="req">*</span></label>
+        <select id="trabajo-select" class="select">
+          <option value="">Selecciona una opción…</option>
+          <option value="Cambio de pieza/repuesto">Cambio de pieza/repuesto</option>
+          <option value="Reparación / ajuste">Reparación / ajuste</option>
+          <option value="Mantenimiento preventivo">Mantenimiento preventivo</option>
+          <option value="Diagnóstico (sin reparación)">Diagnóstico (sin reparación)</option>
+          <option value="Otro">Otro (especifica)</option>
+        </select>
+      </div>
+
+      <div class="field" id="trabajo-otro-field" hidden>
+        <label class="field-label" for="trabajo-otro-input">Especifica el trabajo <span class="req">*</span></label>
+        <input id="trabajo-otro-input" class="input" type="text" placeholder="Describe el trabajo realizado">
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="costo-input">Costo de la reparación <span class="muted" style="font-weight:500;">(opcional)</span></label>
+        <input id="costo-input" class="input" type="number" step="0.01" min="0" placeholder="0.00" inputmode="decimal">
+        <div class="field-hint">USD. Déjalo vacío si fue gratis o por garantía.</div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="observaciones-input">Observaciones <span class="muted" style="font-weight:500;">(opcional)</span></label>
+        <textarea id="observaciones-input" class="textarea" placeholder="Comentarios adicionales sobre el retorno"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Foto de salida de mecánica <span class="req">*</span></label>
+        <label class="photo-box" id="photo-mecanica-box">
+          <input type="file" id="photo-mecanica-input" accept="image/*" capture="environment">
+          <div class="photo-placeholder">
+            <div class="photo-icon">📸</div>
+            <div class="photo-label">Tomar / subir foto</div>
+            <div class="photo-hint">El repuesto saliendo del taller</div>
+          </div>
+          <img class="photo-preview" id="photo-mecanica-preview" hidden>
+        </label>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Foto de recepción en bodega <span class="req">*</span></label>
+        <label class="photo-box" id="photo-bodega-box">
+          <input type="file" id="photo-bodega-input" accept="image/*" capture="environment">
+          <div class="photo-placeholder">
+            <div class="photo-icon">📦</div>
+            <div class="photo-label">Tomar / subir foto</div>
+            <div class="photo-hint">El repuesto de vuelta en bodega</div>
+          </div>
+          <img class="photo-preview" id="photo-bodega-preview" hidden>
+        </label>
+      </div>
+
+      <button class="btn primary large" id="btn-submit" style="margin-top: 10px;">
+        Cerrar orden y registrar retorno →
+      </button>
+      <div class="alert error" id="form-error" hidden>
+        <span class="icon">⚠️</span>
+        <span id="form-error-msg"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Screen: SUBMITTING ========== -->
+  <section id="screen-submitting" class="screen">
+    <div class="card">
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <div class="submitting-title">Procesando retorno…</div>
+        <div class="submitting-sub">Generando acta de cierre, esto toma 15-30 segundos</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Screen: SUCCESS ========== -->
+  <section id="screen-success" class="screen">
+    <div class="card">
+      <div class="success-state">
+        <div class="success-circle">✓</div>
+        <div class="success-title">¡Orden cerrada!</div>
+        <div class="or-badge" id="success-or" style="margin-bottom: 16px;">—</div>
+        <div class="success-helper">El acta de retorno está lista y se notificó por WhatsApp</div>
+
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a class="btn success-btn" id="btn-download-retorno" href="#" target="_blank" rel="noopener">
+            ⬇ Descargar acta de retorno
+          </a>
+          <button class="btn secondary" id="btn-new-retorno">Cerrar otra orden</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Screen: ERROR ========== -->
+  <section id="screen-error" class="screen">
+    <div class="card">
+      <div style="text-align:center; padding: 30px 12px;">
+        <div style="width:84px;height:84px;background:var(--error-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:42px;">⚠️</div>
+        <div class="submitting-title" style="font-size:22px;">Algo salió mal</div>
+        <p class="muted" style="margin-top:8px;" id="error-msg">El servidor no respondió correctamente.</p>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:24px;">
+          <button class="btn primary" id="btn-retry">Intentar de nuevo</button>
+          <button class="btn secondary" id="btn-back-form">Volver al formulario</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// =============================================================
+// CONFIG
+// =============================================================
+const CONFIG = {
+  USUARIOS_SHEET_ID: '1m_iQrfb63NkGJwS4DHthb2M8DsyxzWl3XRxJzXctSqU',
+  USUARIOS_SHEET_NAME: 'USUARIOS',
+  ORDENES_SHEET_ID: '1R28Z0TUQFwqJsKcnUgXmPVwOeKZVqJdJoeDVGsApDK0',
+  ORDENES_SHEET_NAME: 'OrdenesReparacion',
+  WEBHOOK_URL: 'https://paneln8n.globecosmart.com/webhook/form-retorno-repuesto',
+  REQUIRED_PERMISSION: 'retorno_repuesto',
+  STORAGE_KEY: 'globeco_repuestos_user_v2'
+};
+
+// Mapeo de posiciones de OrdenesReparacion (fallback si los labels gviz fallan por Tables)
+const ORDENES_POSICIONES = {
+  codigo_or: 0, fecha_salida: 1, fecha_retorno: 2, dias_en_mecanica: 3,
+  estado: 4, sede: 5, proyecto: 6, placa_camion: 7, tipo_item: 8,
+  subcategoria_item: 9, descripcion_repuesto: 10, motivo_reparacion: 11,
+  proveedor_mecanica: 12, retira_id: 13, retira_nombre: 14, recibe_mecanica: 15,
+  recoge_id: 16, recoge_nombre: 17, trabajo_realizado: 18, costo_reparacion: 19,
+  url_acta_salida_pdf: 20, url_acta_retorno_pdf: 21, url_foto_salida_bodega: 22,
+  url_foto_entrega_mecanica: 23, url_foto_salida_mecanica: 24,
+  url_foto_recepcion_bodega: 25, observaciones: 26
+};
+
+const USUARIOS_POSICIONES = {
+  'ID': 0, 'Nombres': 1, 'Apellidos': 2, 'Alias': 3, 'Numero': 4,
+  'Cedula': 5, 'Correo': 6, 'Proyecto empresa': 7, 'Ciudad': 8,
+  'Cargo': 9, 'Permisos acceso': 10, 'Estado': 11
+};
+
+// =============================================================
+// STATE
+// =============================================================
+const state = {
+  user: null,
+  orData: null,           // datos del OR validado
+  fotoSalidaMecanica: null,
+  fotoRecepcionBodega: null,
+  lastSubmitPayload: null
+};
+
+// =============================================================
+// UTILS
+// =============================================================
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+function showScreen(id) {
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  $('#' + id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function getInitials(name) {
+  if (!name) return '·';
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]||'')[0] + (parts[1]||'')[0]).toUpperCase() || '·';
+}
+
+function normDigits(s) { return String(s || '').replace(/[^\d]/g, ''); }
+
+// =============================================================
+// LOGIN — validar cédula contra USUARIOS, validar permiso retorno
+// =============================================================
+async function validateCedula(cedula) {
+  const cleanCedula = normDigits(cedula);
+  if (cleanCedula.length < 8) throw new Error('La cédula debe tener al menos 8 dígitos');
+
+  const url = `https://docs.google.com/spreadsheets/d/${CONFIG.USUARIOS_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${CONFIG.USUARIOS_SHEET_NAME}&headers=1`;
+  const resp = await fetch(url);
+  const text = await resp.text();
+  const json = text.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+  const data = JSON.parse(json);
+
+  if (!data.table || !data.table.cols) throw new Error('No se pudo leer la base de usuarios');
+
+  const cols = (data.table.cols || []).map(c => ({ label: c.label || '', id: c.id || '' }));
+  const colIdx = (label) => {
+    const target = label.toLowerCase().replace(/[áéíóú]/g, m => ({á:'a',é:'e',í:'i',ó:'o',ú:'u'})[m]);
+    let i = cols.findIndex(c => {
+      const norm = (c.label || '').toLowerCase().replace(/[áéíóú]/g, m => ({á:'a',é:'e',í:'i',ó:'o',ú:'u'})[m]);
+      return norm === target;
+    });
+    if (i >= 0) return i;
+    if (USUARIOS_POSICIONES[label] !== undefined) return USUARIOS_POSICIONES[label];
+    return -1;
+  };
+
+  const cedulaIdx = colIdx('Cedula');
+  if (cedulaIdx < 0) throw new Error('No se encontró la columna Cédula en la base');
+
+  const matchingRow = data.table.rows.find(row => {
+    const cell = row.c[cedulaIdx];
+    if (!cell || cell.v === null || cell.v === undefined) return false;
+    return normDigits(cell.v) === cleanCedula;
+  });
+
+  if (!matchingRow) throw new Error('Cédula no registrada en el sistema');
+
+  const row = matchingRow.c.map(c => (c && c.v !== null && c.v !== undefined) ? String(c.v) : '');
+  const get = (label) => { const i = colIdx(label); return (i >= 0 && i < row.length) ? row[i] : ''; };
+
+  const user = {
+    id_gl: get('ID'),
+    nombre: (get('Nombres') + ' ' + get('Apellidos')).trim(),
+    alias: get('Alias'),
+    cedula: cleanCedula,
+    phone: normDigits(get('Numero')),
+    correo: get('Correo'),
+    proyecto: get('Proyecto empresa'),
+    ciudad: get('Ciudad'),
+    cargo: get('Cargo'),
+    permisos: get('Permisos acceso'),
+    estado: get('Estado')
+  };
+
+  if (user.estado && user.estado.toLowerCase() !== 'activo') {
+    throw new Error('Tu usuario no está activo. Contacta a tu administrador.');
+  }
+  const permList = (user.permisos || '').toLowerCase().split(',').map(s => s.trim());
+  if (!permList.includes(CONFIG.REQUIRED_PERMISSION.toLowerCase())) {
+    throw new Error('No tienes permiso para registrar retornos de repuesto');
+  }
+
+  return user;
+}
+
+// =============================================================
+// Apply user to UI (topbars de OR + FORM)
+// =============================================================
+function applyUser(user) {
+  state.user = user;
+  const initials = getInitials(user.alias || user.nombre);
+  const name = user.alias || user.nombre || '—';
+  const sub = (user.id_gl || '—') + ' · ' + (user.cargo || '—');
+  $('#user-name-or').textContent = name;
+  $('#user-sub-or').textContent = sub;
+  $('#user-avatar-or').textContent = initials;
+  $('#user-name-form').textContent = name;
+  $('#user-sub-form').textContent = sub;
+  $('#user-avatar-form').textContent = initials;
+}
+
+function logout() {
+  localStorage.removeItem(CONFIG.STORAGE_KEY);
+  state.user = null;
+  state.orData = null;
+  showScreen('screen-login');
+  $('#cedula-input').value = '';
+  $('#cedula-input').focus();
+}
+
+// =============================================================
+// LOOKUP OR — leer OrdenesReparacion y buscar el código
+// =============================================================
+async function lookupOR(codigoOR) {
+  const codeUpper = String(codigoOR).trim().toUpperCase();
+  if (!/^OR-[A-Z]{2,4}-\d{4}-\d{4}$/.test(codeUpper)) {
+    throw new Error('Formato inválido. Ejemplo: OR-UIO-2026-0001');
+  }
+
+  const url = `https://docs.google.com/spreadsheets/d/${CONFIG.ORDENES_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${CONFIG.ORDENES_SHEET_NAME}&headers=1`;
+  const resp = await fetch(url);
+  const text = await resp.text();
+  const json = text.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+  const data = JSON.parse(json);
+
+  if (!data.table || !data.table.rows) {
+    return { found: false, codigoOR: codeUpper };
+  }
+
+  // Helper para extraer valor por posición fija (más confiable que por label)
+  const getByPos = (row, key) => {
+    const i = ORDENES_POSICIONES[key];
+    if (i === undefined) return '';
+    const cell = row.c[i];
+    if (!cell) return '';
+    // gviz a veces da .f (formato) y .v (raw)
+    return (cell.f !== undefined && cell.f !== null && cell.f !== '') ? String(cell.f) :
+           (cell.v !== undefined && cell.v !== null) ? String(cell.v) : '';
+  };
+
+  // Buscar fila por codigo_or (columna 0)
+  const matchingRow = data.table.rows.find(row => {
+    const val = getByPos(row, 'codigo_or');
+    return val.trim().toUpperCase() === codeUpper;
+  });
+
+  if (!matchingRow) return { found: false, codigoOR: codeUpper };
+
+  return {
+    found: true,
+    codigoOR: codeUpper,
+    fecha_salida: getByPos(matchingRow, 'fecha_salida'),
+    fecha_retorno: getByPos(matchingRow, 'fecha_retorno'),
+    dias_en_mecanica: getByPos(matchingRow, 'dias_en_mecanica'),
+    estado: getByPos(matchingRow, 'estado'),
+    sede: getByPos(matchingRow, 'sede'),
+    proyecto: getByPos(matchingRow, 'proyecto'),
+    placa: getByPos(matchingRow, 'placa_camion'),
+    tipo_item: getByPos(matchingRow, 'tipo_item'),
+    descripcion: getByPos(matchingRow, 'descripcion_repuesto'),
+    motivo: getByPos(matchingRow, 'motivo_reparacion'),
+    proveedor: getByPos(matchingRow, 'proveedor_mecanica'),
+    retira_id: getByPos(matchingRow, 'retira_id'),
+    retira_nombre: getByPos(matchingRow, 'retira_nombre'),
+    recibe_mecanica: getByPos(matchingRow, 'recibe_mecanica'),
+    recoge_id: getByPos(matchingRow, 'recoge_id'),
+    recoge_nombre: getByPos(matchingRow, 'recoge_nombre'),
+    trabajo_realizado: getByPos(matchingRow, 'trabajo_realizado'),
+    url_acta_salida_pdf: getByPos(matchingRow, 'url_acta_salida_pdf'),
+    url_acta_retorno_pdf: getByPos(matchingRow, 'url_acta_retorno_pdf'),
+    url_foto_salida_bodega: getByPos(matchingRow, 'url_foto_salida_bodega'),
+    url_foto_entrega_mecanica: getByPos(matchingRow, 'url_foto_entrega_mecanica')
+  };
+}
+
+// =============================================================
+// VALIDATE & APPLY OR
+// =============================================================
+async function processOR(codigoOR) {
+  showScreen('screen-validating');
+  $('#validating-or-code').textContent = codigoOR;
+
+  let orData;
+  try {
+    orData = await lookupOR(codigoOR);
+  } catch (err) {
+    showScreen('screen-or');
+    showError('or-error', 'or-error-msg', err.message);
+    return;
+  }
+
+  if (!orData.found) {
+    $('#not-found-code').textContent = orData.codigoOR;
+    showScreen('screen-not-found');
+    return;
+  }
+
+  // ¿Está cerrada?
+  if ((orData.estado || '').toLowerCase() !== 'activa') {
+    $('#closed-code').textContent = orData.codigoOR;
+    $('#closed-date').textContent = orData.fecha_retorno || 'fecha desconocida';
+    $('#closed-by').textContent = orData.recoge_nombre || 'usuario desconocido';
+    showScreen('screen-already-closed');
+    return;
+  }
+
+  // OK, está activa → cargar form
+  state.orData = orData;
+  applyORToForm(orData);
+  showScreen('screen-form');
+}
+
+function applyORToForm(orData) {
+  $('#form-or-badge').textContent = orData.codigoOR;
+  $('#sum-fecha').textContent = orData.fecha_salida || '—';
+  $('#sum-sede').textContent = orData.sede || '—';
+  $('#sum-proyecto').textContent = orData.proyecto || '—';
+  $('#sum-placa').textContent = orData.placa || '—';
+  $('#sum-tipo').textContent = orData.tipo_item || '—';
+  $('#sum-descripcion').textContent = orData.descripcion || '—';
+  $('#sum-motivo').textContent = orData.motivo || '—';
+  $('#sum-proveedor').textContent = orData.proveedor || '—';
+  $('#sum-entregante').textContent = orData.retira_nombre || '—';
+
+  // Calcular días en mecánica (desde fecha_salida hasta hoy)
+  const dias = calcDiasMecanica(orData.fecha_salida);
+  $('#form-dias-mecanica').textContent = dias != null ? `${dias} días en mecánica` : '—';
+}
+
+function calcDiasMecanica(fechaSalidaStr) {
+  if (!fechaSalidaStr) return null;
+  // Parseo flexible — la fecha viene como "2026-06-11 09:35:42" o similar
+  const m = String(fechaSalidaStr).match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return null;
+  const salida = new Date(parseInt(m[1]), parseInt(m[2]) - 1, parseInt(m[3]));
+  const hoy = new Date();
+  const diffMs = hoy - salida;
+  return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
+
+// =============================================================
+// PHOTOS — handle file → base64
+// =============================================================
+function setupPhotoInput(inputId, previewId, boxId, stateKey) {
+  $('#' + inputId).addEventListener('change', async (ev) => {
+    const file = ev.target.files[0];
+    if (!file) return;
+    try {
+      const compressed = await compressImage(file, 1600, 0.85);
+      const dataUrl = compressed;
+      $('#' + previewId).src = dataUrl;
+      $('#' + previewId).hidden = false;
+      $('#' + boxId).classList.add('has-image');
+      state[stateKey] = dataUrl;
+    } catch (err) {
+      alert('Error procesando la foto: ' + err.message);
+    }
+  });
+}
+
+function compressImage(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onload = (e) => { img.src = e.target.result; };
+    reader.onerror = () => reject(new Error('No se pudo leer el archivo'));
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxDim || height > maxDim) {
+        if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+        else { width = Math.round(width * maxDim / height); height = maxDim; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => reject(new Error('Imagen inválida'));
+    reader.readAsDataURL(file);
+  });
+}
+
+// =============================================================
+// SUBMIT
+// =============================================================
+async function submitRetorno() {
+  // Validaciones
+  const trabajoSel = $('#trabajo-select').value;
+  if (!trabajoSel) return showError('form-error', 'form-error-msg', 'Selecciona el tipo de trabajo realizado');
+  let trabajoFinal = trabajoSel;
+  if (trabajoSel === 'Otro') {
+    const otro = $('#trabajo-otro-input').value.trim();
+    if (!otro) return showError('form-error', 'form-error-msg', 'Especifica el trabajo realizado');
+    trabajoFinal = 'Otro: ' + otro;
+  }
+  if (!state.fotoSalidaMecanica) return showError('form-error', 'form-error-msg', 'Falta la foto de salida de mecánica');
+  if (!state.fotoRecepcionBodega) return showError('form-error', 'form-error-msg', 'Falta la foto de recepción en bodega');
+
+  const costoRaw = $('#costo-input').value.trim();
+  const costo = costoRaw ? parseFloat(costoRaw) : null;
+
+  const payload = {
+    usuario: state.user,
+    retorno: {
+      codigoOR: state.orData.codigoOR,
+      trabajo_realizado: trabajoFinal,
+      costo: costo,
+      observaciones: $('#observaciones-input').value.trim(),
+      foto_salida_mecanica_base64: state.fotoSalidaMecanica,
+      foto_recepcion_bodega_base64: state.fotoRecepcionBodega
+    },
+    salida_ref: {
+      fecha_salida: state.orData.fecha_salida,
+      retira_id: state.orData.retira_id,
+      retira_nombre: state.orData.retira_nombre,
+      url_foto_salida_bodega: state.orData.url_foto_salida_bodega,
+      url_foto_entrega_mecanica: state.orData.url_foto_entrega_mecanica,
+      url_acta_salida_pdf: state.orData.url_acta_salida_pdf
+    }
+  };
+
+  state.lastSubmitPayload = payload;
+  showScreen('screen-submitting');
+
+  try {
+    const resp = await fetch(CONFIG.WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const text = await resp.text();
+    console.log('[Globeco] Response:', resp.status, text);
+    if (!resp.ok) throw new Error(`Servidor respondió ${resp.status}`);
+    let result;
+    try { result = JSON.parse(text); }
+    catch (e) { throw new Error('El servidor respondió con texto no-JSON'); }
+
+    if (result.error) throw new Error(result.error);
+
+    $('#success-or').textContent = result.codigo_or || state.orData.codigoOR;
+    if (result.pdf_retorno_url) {
+      $('#btn-download-retorno').href = result.pdf_retorno_url;
+    } else {
+      $('#btn-download-retorno').style.display = 'none';
+    }
+    showScreen('screen-success');
+  } catch (err) {
+    console.error('[Globeco] Submit error:', err);
+    $('#error-msg').textContent = err.message || 'Error desconocido';
+    showScreen('screen-error');
+  }
+}
+
+function showError(alertId, msgId, msg) {
+  $('#' + msgId).textContent = msg;
+  $('#' + alertId).hidden = false;
+  setTimeout(() => { $('#' + alertId).hidden = true; }, 5000);
+}
+
+// =============================================================
+// EVENT BINDINGS
+// =============================================================
+$('#btn-login').addEventListener('click', async () => {
+  const ced = $('#cedula-input').value;
+  $('#login-error').hidden = true;
+  try {
+    const user = await validateCedula(ced);
+    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(user));
+    applyUser(user);
+    proceedAfterLogin();
+  } catch (err) {
+    showError('login-error', 'login-error-msg', err.message);
+  }
+});
+$('#cedula-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#btn-login').click(); });
+
+$('#btn-or-continue').addEventListener('click', () => {
+  const code = $('#or-input').value.trim().toUpperCase();
+  if (!code) return showError('or-error', 'or-error-msg', 'Ingresa un código OR');
+  processOR(code);
+});
+$('#or-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#btn-or-continue').click(); });
+
+$('#btn-try-again').addEventListener('click', () => { $('#or-input').value = ''; showScreen('screen-or'); $('#or-input').focus(); });
+$('#btn-back-to-or').addEventListener('click', () => { $('#or-input').value = ''; showScreen('screen-or'); $('#or-input').focus(); });
+
+$('#btn-logout-or').addEventListener('click', logout);
+$('#btn-logout-form').addEventListener('click', logout);
+
+$('#trabajo-select').addEventListener('change', (e) => {
+  $('#trabajo-otro-field').hidden = e.target.value !== 'Otro';
+});
+
+setupPhotoInput('photo-mecanica-input', 'photo-mecanica-preview', 'photo-mecanica-box', 'fotoSalidaMecanica');
+setupPhotoInput('photo-bodega-input', 'photo-bodega-preview', 'photo-bodega-box', 'fotoRecepcionBodega');
+
+$('#btn-submit').addEventListener('click', submitRetorno);
+
+$('#btn-retry').addEventListener('click', async () => {
+  if (!state.lastSubmitPayload) return showScreen('screen-form');
+  showScreen('screen-submitting');
+  try {
+    const resp = await fetch(CONFIG.WEBHOOK_URL, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state.lastSubmitPayload)
+    });
+    const text = await resp.text();
+    if (!resp.ok) throw new Error(`Servidor respondió ${resp.status}`);
+    const result = JSON.parse(text);
+    if (result.error) throw new Error(result.error);
+    $('#success-or').textContent = result.codigo_or || state.orData.codigoOR;
+    if (result.pdf_retorno_url) $('#btn-download-retorno').href = result.pdf_retorno_url;
+    showScreen('screen-success');
+  } catch (err) {
+    $('#error-msg').textContent = err.message;
+    showScreen('screen-error');
+  }
+});
+
+$('#btn-back-form').addEventListener('click', () => showScreen('screen-form'));
+$('#btn-new-retorno').addEventListener('click', () => {
+  state.orData = null;
+  state.fotoSalidaMecanica = null;
+  state.fotoRecepcionBodega = null;
+  state.lastSubmitPayload = null;
+  $('#or-input').value = '';
+  $('#trabajo-select').value = '';
+  $('#trabajo-otro-field').hidden = true;
+  $('#trabajo-otro-input').value = '';
+  $('#costo-input').value = '';
+  $('#observaciones-input').value = '';
+  $('#photo-mecanica-preview').hidden = true;
+  $('#photo-mecanica-box').classList.remove('has-image');
+  $('#photo-mecanica-input').value = '';
+  $('#photo-bodega-preview').hidden = true;
+  $('#photo-bodega-box').classList.remove('has-image');
+  $('#photo-bodega-input').value = '';
+  showScreen('screen-or');
+  $('#or-input').focus();
+});
+
+// =============================================================
+// INIT — auto-login + auto-OR si vienen pre-cargados
+// =============================================================
+function getQueryParam(name) {
+  const m = new RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+function proceedAfterLogin() {
+  // Si la URL trae ?or=XXX, ir directo a validar
+  const orParam = getQueryParam('or');
+  if (orParam) {
+    processOR(orParam.toUpperCase());
+  } else {
+    showScreen('screen-or');
+    setTimeout(() => $('#or-input').focus(), 100);
+  }
+}
+
+(function init() {
+  // Restaurar usuario de localStorage si existe
+  try {
+    const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
+    if (saved) {
+      const user = JSON.parse(saved);
+      if (user && user.cedula) {
+        applyUser(user);
+        proceedAfterLogin();
+        return;
+      }
+    }
+  } catch (e) {}
+  // Si trae ?c= en URL, prellenar cédula
+  const cParam = getQueryParam('c');
+  if (cParam) $('#cedula-input').value = cParam;
+})();
+</script>
+</body>
+</html>
 
