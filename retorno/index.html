@@ -512,28 +512,52 @@ body::before {
 
   <!-- ========== Screen: NOT FOUND ========== -->
   <section id="screen-not-found" class="screen">
-    <div class="card">
-      <div style="text-align:center; padding: 30px 12px;">
-        <div style="width:84px;height:84px;background:var(--error-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:42px;">🔍</div>
-        <div class="submitting-title" style="font-size:22px;">Orden no encontrada</div>
-        <p class="muted" style="margin-top:8px;">
-          El código <strong id="not-found-code" style="color:var(--text-strong)">—</strong> no existe en el sistema. Revísalo o pídeselo a quien registró la salida.
-        </p>
-        <button class="btn primary" id="btn-try-again" style="margin-top:24px;">Intentar otro código</button>
+    <div class="card" style="padding: 28px 22px;">
+      <div style="text-align:center;">
+        <div style="width:96px;height:96px;background:linear-gradient(135deg,var(--error-bg),#FECACA);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:46px;box-shadow:0 6px 20px rgba(185,28,28,0.12);">🔍</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--text-strong);letter-spacing:-0.4px;margin-bottom:6px;">Orden no encontrada</div>
+        <p class="muted" style="font-size:14px;line-height:1.55;margin-bottom:18px;">El código que ingresaste no existe en el sistema.</p>
+
+        <div style="background:var(--surface-alt);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 16px;margin-bottom:20px;">
+          <div style="font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-mute);font-weight:700;margin-bottom:6px;">Código buscado</div>
+          <div style="font-family:var(--font-display);font-weight:800;font-size:18px;color:var(--text-strong);letter-spacing:0.5px;" id="not-found-code">—</div>
+        </div>
+
+        <p class="muted" style="font-size:12.5px;line-height:1.5;margin-bottom:22px;">Revísalo bien o pídeselo a quien registró la salida del repuesto.</p>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn primary" id="btn-try-again">Intentar con otro código</button>
+          <button class="btn secondary" id="btn-go-dashboard-nf">← Volver al menú principal</button>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ========== Screen: ALREADY CLOSED ========== -->
   <section id="screen-already-closed" class="screen">
-    <div class="card">
-      <div style="text-align:center; padding: 30px 12px;">
-        <div style="width:84px;height:84px;background:var(--success-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:42px;">✅</div>
-        <div class="submitting-title" style="font-size:22px;">Esta orden ya fue cerrada</div>
-        <p class="muted" style="margin-top:8px; line-height:1.6;">
-          La orden <strong id="closed-code" style="color:var(--text-strong)">—</strong> se cerró el <strong id="closed-date" style="color:var(--text-strong)">—</strong> por <strong id="closed-by" style="color:var(--text-strong)">—</strong>.
-        </p>
-        <button class="btn primary" id="btn-back-to-or" style="margin-top:24px;">Cerrar otra orden</button>
+    <div class="card" style="padding: 28px 22px;">
+      <div style="text-align:center;">
+        <div style="width:96px;height:96px;background:linear-gradient(135deg,var(--success-bg),#A7E0BC);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:46px;box-shadow:0 6px 20px rgba(21,128,61,0.15);">✓</div>
+        <div style="font-family:var(--font-display);font-weight:800;font-size:24px;color:var(--text-strong);letter-spacing:-0.4px;margin-bottom:6px;">Orden ya cerrada</div>
+        <p class="muted" style="font-size:14px;line-height:1.55;margin-bottom:18px;">Esta orden fue cerrada previamente. No se puede registrar el retorno otra vez.</p>
+
+        <div style="background:linear-gradient(135deg,rgba(21,128,61,0.04),rgba(26,158,77,0.07));border:1px solid #C5E8D2;border-radius:var(--r-md);padding:16px;margin-bottom:20px;text-align:left;">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+            <div style="font-family:var(--font-display);font-weight:800;font-size:16px;color:var(--text-strong);letter-spacing:0.3px;" id="closed-code">—</div>
+            <span class="chip" style="display:inline-block;padding:4px 10px;background:var(--success-bg);color:var(--success);border-radius:99px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Cerrada</span>
+          </div>
+          <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:12.5px;">
+            <div style="color:var(--text-mute);font-weight:500;">Cerrada el</div>
+            <div style="color:var(--text-strong);font-weight:600;" id="closed-date">—</div>
+            <div style="color:var(--text-mute);font-weight:500;">Por</div>
+            <div style="color:var(--text-strong);font-weight:600;" id="closed-by">—</div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="btn primary" id="btn-go-dashboard-ac">← Volver al menú principal</button>
+          <button class="btn secondary" id="btn-back-to-or">Cerrar otra orden manualmente</button>
+        </div>
       </div>
     </div>
   </section>
@@ -670,11 +694,18 @@ body::before {
         <div class="or-badge" id="success-or" style="margin-bottom: 16px;">—</div>
         <div class="success-helper">El acta de retorno está lista y se notificó por WhatsApp</div>
 
-        <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
           <a class="btn success-btn" id="btn-download-retorno" href="#" target="_blank" rel="noopener">
             ⬇ Descargar acta de retorno
           </a>
-          <button class="btn secondary" id="btn-new-retorno">Cerrar otra orden</button>
+          <button class="btn primary" id="btn-go-dashboard-success">← Volver al menú principal</button>
+          <button class="btn secondary" id="btn-new-retorno">Cerrar otra orden manualmente</button>
+        </div>
+
+        <div id="acta-preview" hidden style="margin-top:8px;">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-mute);font-weight:700;margin-bottom:10px;">Previsualización del acta</div>
+          <img id="acta-preview-img" src="" alt="Acta de retorno"
+               style="width:100%;border-radius:var(--r-md);border:1px solid var(--border);box-shadow:var(--shadow-md);display:block;">
         </div>
       </div>
     </div>
@@ -707,9 +738,23 @@ const CONFIG = {
   ORDENES_SHEET_ID: '1R28Z0TUQFwqJsKcnUgXmPVwOeKZVqJdJoeDVGsApDK0',
   ORDENES_SHEET_NAME: 'OrdenesReparacion',
   WEBHOOK_URL: 'https://paneln8n.globecosmart.com/webhook/form-retorno-repuesto',
+  DASHBOARD_URL: 'https://globecolatam.github.io/repuestos/',
   REQUIRED_PERMISSION: 'retorno_repuesto',
   STORAGE_KEY: 'globeco_repuestos_user_v2'
 };
+
+// Limpia el ?or= del URL sin recargar la página
+function clearOrFromUrl() {
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('or');
+    window.history.replaceState({}, '', url.toString());
+  } catch (e) {}
+}
+// Lleva al dashboard principal
+function goToDashboard() {
+  window.location.href = CONFIG.DASHBOARD_URL;
+}
 
 // Mapeo de posiciones de OrdenesReparacion (fallback si los labels gviz fallan por Tables)
 const ORDENES_POSICIONES = {
@@ -1084,9 +1129,17 @@ async function submitRetorno() {
     $('#success-or').textContent = result.codigo_or || state.orData.codigoOR;
     if (result.pdf_retorno_url) {
       $('#btn-download-retorno').href = result.pdf_retorno_url;
+      $('#btn-download-retorno').style.display = '';
     } else {
       $('#btn-download-retorno').style.display = 'none';
     }
+    if (result.acta_preview_url) {
+      $('#acta-preview-img').src = result.acta_preview_url;
+      $('#acta-preview').hidden = false;
+    } else {
+      $('#acta-preview').hidden = true;
+    }
+    clearOrFromUrl();
     showScreen('screen-success');
   } catch (err) {
     console.error('[Globeco] Submit error:', err);
@@ -1125,8 +1178,8 @@ $('#btn-or-continue').addEventListener('click', () => {
 });
 $('#or-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#btn-or-continue').click(); });
 
-$('#btn-try-again').addEventListener('click', () => { $('#or-input').value = ''; showScreen('screen-or'); $('#or-input').focus(); });
-$('#btn-back-to-or').addEventListener('click', () => { $('#or-input').value = ''; showScreen('screen-or'); $('#or-input').focus(); });
+$('#btn-try-again').addEventListener('click', () => { $('#or-input').value = ''; clearOrFromUrl(); showScreen('screen-or'); $('#or-input').focus(); });
+$('#btn-back-to-or').addEventListener('click', () => { $('#or-input').value = ''; clearOrFromUrl(); showScreen('screen-or'); $('#or-input').focus(); });
 
 $('#btn-logout-or').addEventListener('click', logout);
 $('#btn-logout-form').addEventListener('click', logout);
@@ -1153,7 +1206,17 @@ $('#btn-retry').addEventListener('click', async () => {
     const result = JSON.parse(text);
     if (result.error) throw new Error(result.error);
     $('#success-or').textContent = result.codigo_or || state.orData.codigoOR;
-    if (result.pdf_retorno_url) $('#btn-download-retorno').href = result.pdf_retorno_url;
+    if (result.pdf_retorno_url) {
+      $('#btn-download-retorno').href = result.pdf_retorno_url;
+      $('#btn-download-retorno').style.display = '';
+    }
+    if (result.acta_preview_url) {
+      $('#acta-preview-img').src = result.acta_preview_url;
+      $('#acta-preview').hidden = false;
+    } else {
+      $('#acta-preview').hidden = true;
+    }
+    clearOrFromUrl();
     showScreen('screen-success');
   } catch (err) {
     $('#error-msg').textContent = err.message;
@@ -1162,6 +1225,13 @@ $('#btn-retry').addEventListener('click', async () => {
 });
 
 $('#btn-back-form').addEventListener('click', () => showScreen('screen-form'));
+
+// Botones "Volver al menú principal" — los 3 nuevos
+$('#btn-go-dashboard-nf').addEventListener('click', goToDashboard);
+$('#btn-go-dashboard-ac').addEventListener('click', goToDashboard);
+$('#btn-go-dashboard-success').addEventListener('click', goToDashboard);
+
+// Botón "Cerrar otra orden manualmente" — limpia URL antes de volver
 $('#btn-new-retorno').addEventListener('click', () => {
   state.orData = null;
   state.fotoSalidaMecanica = null;
@@ -1179,6 +1249,8 @@ $('#btn-new-retorno').addEventListener('click', () => {
   $('#photo-bodega-preview').hidden = true;
   $('#photo-bodega-box').classList.remove('has-image');
   $('#photo-bodega-input').value = '';
+  $('#acta-preview').hidden = true;
+  clearOrFromUrl();
   showScreen('screen-or');
   $('#or-input').focus();
 });
@@ -1222,4 +1294,3 @@ function proceedAfterLogin() {
 </script>
 </body>
 </html>
-
