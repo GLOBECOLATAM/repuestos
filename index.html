@@ -1,1 +1,1217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#1E3A5F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Control de Repuestos · Globeco Smart</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231E3A5F'/%3E%3Ctext x='32' y='44' font-family='system-ui' font-size='36' font-weight='800' fill='white' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E">
+
+<style>
+:root {
+  --navy: #1E3A5F;
+  --navy-light: #2E5A8F;
+  --navy-deep: #142847;
+  --accent: #4A7AB5;
+  --teal: #0E7C7B;
+
+  --bg: #F2F5FA;
+  --bg-grad: linear-gradient(180deg, #F4F6FA 0%, #E8EBF0 100%);
+  --surface: #FFFFFF;
+  --surface-alt: #F7F9FC;
+
+  --border: #DDE2E8;
+  --border-strong: #C6CFDA;
+
+  --text: #1A1A1A;
+  --text-strong: #0D1B2E;
+  --text-mute: #6B7280;
+  --text-faint: #9CA3AF;
+
+  --success: #15803D;
+  --success-bg: #D4EDDA;
+  --warning: #B45309;
+  --warning-bg: #FEF3C7;
+  --error: #B91C1C;
+  --error-bg: #FEE2E2;
+  --info: #1E40AF;
+  --info-bg: #DBEAFE;
+
+  --shadow-sm: 0 1px 2px rgba(30, 58, 95, 0.05);
+  --shadow-md: 0 4px 12px rgba(30, 58, 95, 0.08), 0 1px 3px rgba(30, 58, 95, 0.04);
+  --shadow-lg: 0 12px 32px rgba(30, 58, 95, 0.12), 0 4px 8px rgba(30, 58, 95, 0.06);
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+
+  --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  background-image: var(--bg-grad);
+  background-attachment: fixed;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  padding-bottom: calc(110px + env(safe-area-inset-bottom));
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% -10%, rgba(74, 122, 181, 0.10), transparent 50%),
+    radial-gradient(circle at 90% 110%, rgba(30, 58, 95, 0.06), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px;
+  padding-top: max(20px, env(safe-area-inset-top));
+}
+
+.screen { display: none; animation: fade .35s var(--ease); }
+.screen.active { display: block; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ====== Brand block (login) ====== */
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 4px 32px;
+}
+.brand-mark {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-family: var(--font-display); font-weight: 800; font-size: 26px;
+  box-shadow: var(--shadow-md);
+}
+.brand-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  color: var(--navy);
+  letter-spacing: -0.3px;
+  line-height: 1;
+}
+.brand-sub {
+  font-size: 11px;
+  color: var(--text-mute);
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* ====== Card ====== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 26px 22px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: rgba(74, 122, 181, 0.10);
+  padding: 5px 11px;
+  border-radius: 99px;
+  margin-bottom: 14px;
+}
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.5px;
+  color: var(--text-strong);
+  margin-bottom: 6px;
+  line-height: 1.15;
+}
+.muted { color: var(--text-mute); font-size: 14px; }
+
+/* ====== Topbar ====== */
+.topbar {
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-md);
+}
+.user-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 14px;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  flex-shrink: 0;
+}
+.user-meta { flex: 1; min-width: 0; }
+.user-name { color: #fff; font-weight: 700; font-size: 14px; line-height: 1.2; }
+.user-sub { color: rgba(255,255,255,0.72); font-size: 11.5px; margin-top: 2px; letter-spacing: 0.2px; }
+.btn-logout {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+}
+
+/* ====== Fields ====== */
+.field { margin-bottom: 18px; }
+.field-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-strong);
+  letter-spacing: 0.2px;
+  margin-bottom: 7px;
+}
+.req { color: var(--error); }
+.input {
+  width: 100%;
+  padding: 13px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+  -webkit-appearance: none;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(74, 122, 181, 0.15);
+}
+.field-hint { font-size: 11.5px; color: var(--text-faint); margin-top: 6px; }
+
+/* ====== Buttons ====== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: var(--r-md);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: transform .12s var(--ease), box-shadow .15s var(--ease), background .15s var(--ease);
+  text-decoration: none;
+}
+.btn:active { transform: translateY(1px); }
+.btn.primary {
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+.btn.primary:hover { box-shadow: var(--shadow-lg); }
+.btn.primary.large { padding: 16px 18px; font-size: 16px; }
+.btn.secondary {
+  background: var(--surface);
+  color: var(--text-strong);
+  border: 1.5px solid var(--border-strong);
+}
+.btn.ghost {
+  background: transparent;
+  color: var(--navy);
+  border: 1px solid var(--border);
+  font-weight: 600;
+}
+.btn.block { width: 100%; }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ====== Alerts ====== */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  font-size: 13.5px;
+  font-weight: 500;
+  margin-top: 14px;
+  line-height: 1.45;
+}
+.alert .icon { font-size: 16px; flex-shrink: 0; }
+.alert.error { background: var(--error-bg); color: var(--error); }
+.alert.warning { background: var(--warning-bg); color: var(--warning); }
+.alert.info { background: var(--info-bg); color: var(--info); }
+
+/* ====== Hero (dashboard header) ====== */
+.hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 8px 4px 14px;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.hero-text { flex: 1; min-width: 0; }
+.hero-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--text-strong);
+  letter-spacing: -0.4px;
+  line-height: 1.1;
+}
+.hero-scope {
+  font-size: 12px;
+  color: var(--text-mute);
+  margin-top: 4px;
+  letter-spacing: 0.2px;
+}
+.hero-scope strong { color: var(--text-strong); font-weight: 700; }
+.btn-refresh {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--navy);
+  flex-shrink: 0;
+  transition: transform .3s var(--ease);
+}
+.btn-refresh.spinning { animation: spin 0.7s linear infinite; }
+
+/* ====== Stats grid ====== */
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+}
+.stat-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-mute);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.stat-value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--text-strong);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+.stat-value.alert { color: var(--error); }
+.stat-value.warn { color: var(--warning); }
+.stat-sub { font-size: 11px; color: var(--text-faint); margin-top: 2px; }
+
+@media (min-width: 520px) {
+  .stats { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ====== Search + filters ====== */
+.toolbar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 12px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+.search-wrap {
+  position: relative;
+  margin-bottom: 10px;
+}
+.search-icon {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: var(--text-faint);
+}
+.search-input {
+  width: 100%;
+  padding: 11px 14px 11px 38px;
+  font-family: inherit;
+  font-size: 14px;
+  background: var(--surface-alt);
+  border: 1.5px solid transparent;
+  border-radius: var(--r-md);
+  -webkit-appearance: none;
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface);
+}
+.chips-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 2px;
+  scrollbar-width: none;
+}
+.chips-row::-webkit-scrollbar { display: none; }
+.filter-chip {
+  flex-shrink: 0;
+  background: var(--surface-alt);
+  border: 1.5px solid var(--border);
+  border-radius: 99px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-mute);
+  cursor: pointer;
+  transition: all .15s var(--ease);
+  white-space: nowrap;
+}
+.filter-chip.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+/* ====== OR Cards ====== */
+.cards-list { display: flex; flex-direction: column; gap: 12px; }
+
+.or-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--success);
+  border-radius: var(--r-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  transition: transform .12s var(--ease), box-shadow .15s var(--ease);
+}
+.or-card.alert-warn { border-left-color: var(--warning); }
+.or-card.alert-error { border-left-color: var(--error); }
+.or-card.alert-error { background: linear-gradient(90deg, rgba(185, 28, 28, 0.025), transparent 80%); }
+
+.or-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.or-code {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--text-strong);
+  letter-spacing: -0.3px;
+}
+.days-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 99px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.days-badge.ok { background: var(--success-bg); color: var(--success); }
+.days-badge.warn { background: var(--warning-bg); color: var(--warning); }
+.days-badge.error { background: var(--error-bg); color: var(--error); }
+
+.or-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.meta-pill {
+  background: var(--surface-alt);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-mute);
+}
+.meta-pill .k { color: var(--text-faint); margin-right: 4px; }
+.meta-pill .v { color: var(--text-strong); }
+
+.or-desc {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+.or-desc strong { color: var(--text-strong); font-weight: 600; }
+.or-people {
+  font-size: 11.5px;
+  color: var(--text-mute);
+  margin-bottom: 12px;
+}
+
+.or-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.or-actions .btn { flex: 1; padding: 9px 12px; font-size: 12.5px; }
+.or-actions .btn.primary { background: var(--navy); }
+
+/* ====== Empty state ====== */
+.empty-state {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  padding: 60px 24px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.empty-icon {
+  width: 72px; height: 72px;
+  background: var(--success-bg);
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+}
+.empty-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--text-strong);
+  margin-bottom: 6px;
+}
+.empty-sub { color: var(--text-mute); font-size: 14px; }
+
+/* ====== Loading skeleton ====== */
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-alt) 25%, #EEF1F5 50%, var(--surface-alt) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--r-md);
+}
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+.skel-card { height: 130px; margin-bottom: 12px; border-radius: var(--r-lg); }
+
+/* ====== Floating action button (Nueva salida) ====== */
+.fab {
+  position: fixed;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--navy), var(--navy-light));
+  color: #fff;
+  border: none;
+  border-radius: 99px;
+  padding: 14px 26px;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(30, 58, 95, 0.25), 0 2px 6px rgba(30, 58, 95, 0.12);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform .15s var(--ease), box-shadow .15s var(--ease);
+}
+.fab:hover { box-shadow: 0 10px 28px rgba(30, 58, 95, 0.3); }
+.fab:active { transform: translateX(-50%) translateY(2px); }
+.fab .icon { font-size: 18px; line-height: 1; }
+
+/* ====== Modal ====== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 40, 71, 0.65);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+.modal-overlay.active { display: flex; animation: fade .2s var(--ease); }
+@media (min-width: 500px) {
+  .modal-overlay { align-items: center; }
+}
+.modal {
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  padding: 24px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp .3s var(--ease);
+}
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: none; opacity: 1; } }
+.modal-icon {
+  width: 56px; height: 56px;
+  background: var(--warning-bg);
+  border-radius: 50%;
+  margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+}
+.modal-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text-strong);
+  text-align: center;
+  margin-bottom: 6px;
+}
+.modal-body {
+  color: var(--text-mute);
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+.modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.modal-actions .btn { width: 100%; padding: 12px; }
+
+/* ====== Last update tag ====== */
+.last-update {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 12px;
+  letter-spacing: 0.3px;
+}
+</style>
+</head>
+<body>
+
+<main id="app">
+
+  <!-- ========== Screen: LOGIN ========== -->
+  <section id="screen-login" class="screen active">
+    <div class="brand-block">
+      <div class="brand-mark">G</div>
+      <div>
+        <div class="brand-name">GLOBECO SMART</div>
+        <div class="brand-sub">Control de Repuestos</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">Centro de operaciones</div>
+      <h1 class="title">Identifícate</h1>
+      <p class="muted" style="margin-bottom: 22px;">
+        Ingresa tu número de cédula para acceder al panel de control de repuestos.
+      </p>
+
+      <div class="field">
+        <label class="field-label" for="cedula-input">Número de cédula <span class="req">*</span></label>
+        <input id="cedula-input" class="input" type="tel" inputmode="numeric"
+               placeholder="1726567354" autocomplete="off" autofocus
+               maxlength="10"
+               style="letter-spacing: 1.5px; font-weight: 600; font-size: 17px;">
+        <div class="field-hint">10 dígitos, sin guiones ni espacios</div>
+      </div>
+
+      <button class="btn primary large block" id="btn-login">Continuar →</button>
+      <div class="alert error" id="login-error" hidden>
+        <span class="icon">⚠️</span>
+        <span id="login-error-msg"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Screen: NO PERMISSION ========== -->
+  <section id="screen-no-permission" class="screen">
+    <div class="card">
+      <div style="text-align:center; padding: 30px 12px;">
+        <div style="width:84px;height:84px;background:var(--warning-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:42px;">🔒</div>
+        <h2 style="font-family:var(--font-display);font-weight:800;font-size:22px;color:var(--text-strong);margin-bottom:8px;">Sin acceso al módulo</h2>
+        <p class="muted" style="margin-top:8px; line-height:1.6;">
+          Tu usuario no tiene permisos para acceder al control de repuestos. Necesitas tener al menos uno de estos permisos: <strong style="color:var(--text-strong)">salida_repuesto</strong> o <strong style="color:var(--text-strong)">retorno_repuesto</strong>.
+        </p>
+        <p class="muted" style="margin-top:12px; line-height:1.6;">Contacta a tu administrador para solicitarlos.</p>
+        <button class="btn primary" id="btn-logout-noperm" style="margin-top:24px;">Salir</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Screen: DASHBOARD ========== -->
+  <section id="screen-dashboard" class="screen">
+    <div class="topbar">
+      <div class="user-avatar" id="user-avatar">—</div>
+      <div class="user-meta">
+        <div class="user-name" id="user-name">—</div>
+        <div class="user-sub" id="user-sub">—</div>
+      </div>
+      <button class="btn-logout" id="btn-logout">Salir</button>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-text">
+        <div class="hero-title">Centro de operaciones</div>
+        <div class="hero-scope">
+          Actas activas en <strong id="scope-ciudad">—</strong> · <strong id="scope-proyecto">—</strong>
+        </div>
+      </div>
+      <button class="btn-refresh" id="btn-refresh" title="Actualizar">↻</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats" id="stats-container">
+      <div class="stat">
+        <div class="stat-label">Activas</div>
+        <div class="stat-value" id="stat-activas">—</div>
+        <div class="stat-sub" id="stat-activas-sub">en tu scope</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">En alerta</div>
+        <div class="stat-value alert" id="stat-alertas">—</div>
+        <div class="stat-sub">+15 días</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Promedio</div>
+        <div class="stat-value" id="stat-promedio">—</div>
+        <div class="stat-sub">días en mecánica</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">La más vieja</div>
+        <div class="stat-value warn" id="stat-vieja">—</div>
+        <div class="stat-sub" id="stat-vieja-sub">—</div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="search-input" placeholder="Buscar por placa, código OR, descripción…">
+      </div>
+      <div class="chips-row" id="chips-row">
+        <span class="filter-chip active" data-filter="all">Todas</span>
+        <span class="filter-chip" data-filter="mine">Solo las mías</span>
+        <span class="filter-chip" data-filter="alert">En alerta</span>
+      </div>
+    </div>
+
+    <!-- Lista -->
+    <div id="cards-container" class="cards-list">
+      <div class="skel-card skeleton"></div>
+      <div class="skel-card skeleton"></div>
+      <div class="skel-card skeleton"></div>
+    </div>
+
+    <div class="last-update" id="last-update" hidden>Actualizado a las <span id="last-update-time">—</span></div>
+  </section>
+
+</main>
+
+<!-- Floating button -->
+<button class="fab" id="fab-new" hidden>
+  <span class="icon">+</span>
+  <span>Nueva salida</span>
+</button>
+
+<!-- Modal: sin permiso -->
+<div class="modal-overlay" id="modal-noperm">
+  <div class="modal">
+    <div class="modal-icon">🔒</div>
+    <div class="modal-title" id="modal-title">Permiso requerido</div>
+    <div class="modal-body" id="modal-body">No tienes permiso para esta acción.</div>
+    <div class="modal-actions">
+      <button class="btn secondary" id="modal-close">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================================
+// CONFIG
+// =============================================================
+const CONFIG = {
+  USUARIOS_SHEET_ID: '1m_iQrfb63NkGJwS4DHthb2M8DsyxzWl3XRxJzXctSqU',
+  USUARIOS_SHEET_NAME: 'USUARIOS',
+  ORDENES_SHEET_ID: '1R28Z0TUQFwqJsKcnUgXmPVwOeKZVqJdJoeDVGsApDK0',
+  ORDENES_SHEET_NAME: 'OrdenesReparacion',
+  STORAGE_KEY: 'globeco_repuestos_user_v2',
+  PERMISO_SALIDA: 'salida_repuesto',
+  PERMISO_RETORNO: 'retorno_repuesto',
+  URL_SALIDA: 'https://globecolatam.github.io/repuestos/salida/',
+  URL_RETORNO: 'https://globecolatam.github.io/repuestos/retorno/',
+  UMBRAL_WARN: 6,    // amarillo a partir de aquí
+  UMBRAL_ALERT: 16   // rojo a partir de aquí
+};
+
+const ORDENES_POSICIONES = {
+  codigo_or: 0, fecha_salida: 1, fecha_retorno: 2, dias_en_mecanica: 3,
+  estado: 4, sede: 5, proyecto: 6, placa_camion: 7, tipo_item: 8,
+  subcategoria_item: 9, descripcion_repuesto: 10, motivo_reparacion: 11,
+  proveedor_mecanica: 12, retira_id: 13, retira_nombre: 14, recibe_mecanica: 15,
+  recoge_id: 16, recoge_nombre: 17, trabajo_realizado: 18, costo_reparacion: 19,
+  url_acta_salida_pdf: 20, url_acta_retorno_pdf: 21, url_foto_salida_bodega: 22,
+  url_foto_entrega_mecanica: 23, url_foto_salida_mecanica: 24,
+  url_foto_recepcion_bodega: 25, observaciones: 26
+};
+
+const USUARIOS_POSICIONES = {
+  'ID': 0, 'Nombres': 1, 'Apellidos': 2, 'Alias': 3, 'Numero': 4,
+  'Cedula': 5, 'Correo': 6, 'Proyecto empresa': 7, 'Ciudad': 8,
+  'Cargo': 9, 'Permisos acceso': 10, 'Estado': 11
+};
+
+// =============================================================
+// STATE
+// =============================================================
+const state = {
+  user: null,
+  allOrders: [],     // todas las activas del scope
+  filtered: [],      // filtradas por búsqueda + chip
+  activeChip: 'all',
+  search: ''
+};
+
+// =============================================================
+// UTILS
+// =============================================================
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+
+function showScreen(id) {
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  $('#' + id).classList.add('active');
+  window.scrollTo({ top: 0 });
+}
+
+function getInitials(name) {
+  if (!name) return '·';
+  const parts = name.trim().split(/\s+/);
+  return ((parts[0]||'')[0] + (parts[1]||'')[0]).toUpperCase() || '·';
+}
+
+function normDigits(s) { return String(s || '').replace(/[^\d]/g, ''); }
+
+function escapeHtml(str) {
+  return String(str || '').replace(/[&<>"']/g, m => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[m]));
+}
+
+function calcDays(fechaSalidaStr) {
+  if (!fechaSalidaStr) return 0;
+  const m = String(fechaSalidaStr).match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return 0;
+  const salida = new Date(parseInt(m[1]), parseInt(m[2]) - 1, parseInt(m[3]));
+  const hoy = new Date();
+  return Math.max(0, Math.floor((hoy - salida) / (1000 * 60 * 60 * 24)));
+}
+
+function dayLevel(days) {
+  if (days >= CONFIG.UMBRAL_ALERT) return 'error';
+  if (days >= CONFIG.UMBRAL_WARN) return 'warn';
+  return 'ok';
+}
+
+function showModal(title, body) {
+  $('#modal-title').textContent = title;
+  $('#modal-body').textContent = body;
+  $('#modal-noperm').classList.add('active');
+}
+function hideModal() { $('#modal-noperm').classList.remove('active'); }
+
+// =============================================================
+// LOGIN — validar cédula + permisos
+// =============================================================
+async function validateCedula(cedula) {
+  const cleanCedula = normDigits(cedula);
+  if (cleanCedula.length < 8) throw new Error('La cédula debe tener al menos 8 dígitos');
+
+  const url = `https://docs.google.com/spreadsheets/d/${CONFIG.USUARIOS_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${CONFIG.USUARIOS_SHEET_NAME}&headers=1`;
+  const resp = await fetch(url);
+  const text = await resp.text();
+  const json = text.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+  const data = JSON.parse(json);
+
+  if (!data.table || !data.table.cols) throw new Error('No se pudo leer la base de usuarios');
+
+  const cols = (data.table.cols || []).map(c => ({ label: c.label || '' }));
+  const norm = s => (s || '').toLowerCase().replace(/[áéíóú]/g, m => ({á:'a',é:'e',í:'i',ó:'o',ú:'u'})[m]);
+  const colIdx = (label) => {
+    let i = cols.findIndex(c => norm(c.label) === norm(label));
+    if (i >= 0) return i;
+    if (USUARIOS_POSICIONES[label] !== undefined) return USUARIOS_POSICIONES[label];
+    return -1;
+  };
+
+  const cedulaIdx = colIdx('Cedula');
+  if (cedulaIdx < 0) throw new Error('No se encontró la columna Cédula');
+
+  const matchingRow = data.table.rows.find(row => {
+    const cell = row.c[cedulaIdx];
+    if (!cell || cell.v === null || cell.v === undefined) return false;
+    return normDigits(cell.v) === cleanCedula;
+  });
+  if (!matchingRow) throw new Error('Cédula no registrada en el sistema');
+
+  const row = matchingRow.c.map(c => (c && c.v !== null && c.v !== undefined) ? String(c.v) : '');
+  const get = (label) => { const i = colIdx(label); return (i >= 0 && i < row.length) ? row[i] : ''; };
+
+  const user = {
+    id_gl: get('ID'),
+    nombre: (get('Nombres') + ' ' + get('Apellidos')).trim(),
+    alias: get('Alias'),
+    cedula: cleanCedula,
+    phone: normDigits(get('Numero')),
+    proyecto: get('Proyecto empresa'),
+    ciudad: get('Ciudad'),
+    cargo: get('Cargo'),
+    permisos: get('Permisos acceso'),
+    estado: get('Estado')
+  };
+
+  if (user.estado && user.estado.toLowerCase() !== 'activo') {
+    throw new Error('Tu usuario no está activo. Contacta a tu administrador.');
+  }
+
+  const permList = (user.permisos || '').toLowerCase().split(',').map(s => s.trim());
+  user.canSalida = permList.includes(CONFIG.PERMISO_SALIDA.toLowerCase());
+  user.canRetorno = permList.includes(CONFIG.PERMISO_RETORNO.toLowerCase());
+
+  return user;
+}
+
+function applyUser(user) {
+  state.user = user;
+  $('#user-avatar').textContent = getInitials(user.alias || user.nombre);
+  $('#user-name').textContent = user.alias || user.nombre || '—';
+  $('#user-sub').textContent = (user.id_gl || '—') + ' · ' + (user.cargo || '—');
+  $('#scope-ciudad').textContent = user.ciudad || '—';
+  $('#scope-proyecto').textContent = user.proyecto || '—';
+  // FAB visible siempre, pero si no tiene permiso muestra modal
+  $('#fab-new').hidden = false;
+}
+
+function logout() {
+  localStorage.removeItem(CONFIG.STORAGE_KEY);
+  state.user = null;
+  state.allOrders = [];
+  showScreen('screen-login');
+  $('#cedula-input').value = '';
+  $('#cedula-input').focus();
+}
+
+// =============================================================
+// FETCH ÓRDENES — leer todas las activas del scope (proyecto + ciudad)
+// =============================================================
+async function fetchOrders() {
+  const url = `https://docs.google.com/spreadsheets/d/${CONFIG.ORDENES_SHEET_ID}/gviz/tq?tqx=out:json&sheet=${CONFIG.ORDENES_SHEET_NAME}&headers=1`;
+  const resp = await fetch(url);
+  const text = await resp.text();
+  const json = text.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+  const data = JSON.parse(json);
+
+  if (!data.table || !data.table.rows) return [];
+
+  const getByPos = (row, key) => {
+    const i = ORDENES_POSICIONES[key];
+    if (i === undefined) return '';
+    const cell = row.c[i];
+    if (!cell) return '';
+    return (cell.f !== undefined && cell.f !== null && cell.f !== '') ? String(cell.f) :
+           (cell.v !== undefined && cell.v !== null) ? String(cell.v) : '';
+  };
+
+  const userProy = String(state.user.proyecto || '').trim().toUpperCase();
+  const userCiu = String(state.user.ciudad || '').trim().toUpperCase();
+
+  const orders = [];
+  for (const row of data.table.rows) {
+    const estado = getByPos(row, 'estado');
+    if ((estado || '').toLowerCase() !== 'activa') continue;
+
+    const proy = getByPos(row, 'proyecto').toUpperCase().trim();
+    const sede = getByPos(row, 'sede').toUpperCase().trim();
+    if (proy !== userProy || sede !== userCiu) continue;
+
+    const fechaSalida = getByPos(row, 'fecha_salida');
+    const days = calcDays(fechaSalida);
+
+    orders.push({
+      codigoOR: getByPos(row, 'codigo_or'),
+      fecha_salida: fechaSalida,
+      sede: getByPos(row, 'sede'),
+      proyecto: getByPos(row, 'proyecto'),
+      placa: getByPos(row, 'placa_camion'),
+      tipo_item: getByPos(row, 'tipo_item'),
+      descripcion: getByPos(row, 'descripcion_repuesto'),
+      motivo: getByPos(row, 'motivo_reparacion'),
+      proveedor: getByPos(row, 'proveedor_mecanica'),
+      retira_id: getByPos(row, 'retira_id'),
+      retira_nombre: getByPos(row, 'retira_nombre'),
+      url_acta_salida_pdf: getByPos(row, 'url_acta_salida_pdf'),
+      days
+    });
+  }
+
+  // Ordenar por días desc (las más críticas arriba)
+  orders.sort((a, b) => b.days - a.days);
+  return orders;
+}
+
+// =============================================================
+// STATS
+// =============================================================
+function updateStats() {
+  const orders = state.allOrders;
+  const total = orders.length;
+  const enAlerta = orders.filter(o => o.days >= CONFIG.UMBRAL_ALERT).length;
+  const promedio = total > 0 ? Math.round(orders.reduce((s,o) => s + o.days, 0) / total) : 0;
+  const masVieja = total > 0 ? orders[0] : null;
+
+  $('#stat-activas').textContent = total;
+  $('#stat-activas-sub').textContent = total === 1 ? 'en tu scope' : 'en tu scope';
+  $('#stat-alertas').textContent = enAlerta;
+  $('#stat-promedio').textContent = promedio + 'd';
+  if (masVieja) {
+    $('#stat-vieja').textContent = masVieja.days + 'd';
+    $('#stat-vieja-sub').textContent = masVieja.codigoOR;
+  } else {
+    $('#stat-vieja').textContent = '—';
+    $('#stat-vieja-sub').textContent = 'sin actas';
+  }
+}
+
+// =============================================================
+// RENDER
+// =============================================================
+function renderCards() {
+  const container = $('#cards-container');
+  const list = state.filtered;
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">${state.allOrders.length === 0 ? '✨' : '🔍'}</div>
+        <div class="empty-title">${state.allOrders.length === 0 ? '¡Todo al día!' : 'Sin resultados'}</div>
+        <div class="empty-sub">${state.allOrders.length === 0 ? 'No tienes actas activas en este momento' : 'Prueba con otros filtros o términos de búsqueda'}</div>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(o => {
+    const level = dayLevel(o.days);
+    const cardClass = level === 'ok' ? '' : (level === 'warn' ? 'alert-warn' : 'alert-error');
+    const isMine = o.retira_id === state.user.id_gl;
+    return `
+      <div class="or-card ${cardClass}">
+        <div class="or-card-head">
+          <div>
+            <div class="or-code">${escapeHtml(o.codigoOR)}</div>
+            <div style="font-size:11px;color:var(--text-faint);margin-top:2px;">${escapeHtml((o.fecha_salida || '').slice(0,10))}${isMine ? ' · <span style="color:var(--accent);font-weight:700;">TU ACTA</span>' : ''}</div>
+          </div>
+          <span class="days-badge ${level}">${o.days} ${o.days === 1 ? 'día' : 'días'}</span>
+        </div>
+        <div class="or-meta-row">
+          <span class="meta-pill"><span class="k">Placa</span><span class="v">${escapeHtml(o.placa || '—')}</span></span>
+          <span class="meta-pill"><span class="k">Tipo</span><span class="v">${escapeHtml(o.tipo_item || '—')}</span></span>
+        </div>
+        <div class="or-desc"><strong>${escapeHtml(o.descripcion || '—')}</strong> — ${escapeHtml(o.motivo || '—')}</div>
+        <div class="or-people">🛠 ${escapeHtml(o.proveedor || '—')} · 👤 ${escapeHtml(o.retira_nombre || '—')}</div>
+        <div class="or-actions">
+          <a class="btn ghost" href="${escapeHtml(o.url_acta_salida_pdf || '#')}" target="_blank" rel="noopener" ${!o.url_acta_salida_pdf ? 'style="pointer-events:none;opacity:0.5"' : ''}>📄 Ver acta</a>
+          <button class="btn primary" data-action="retorno" data-or="${escapeHtml(o.codigoOR)}">Cerrar orden →</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Bind buttons de cerrar orden
+  container.querySelectorAll('[data-action="retorno"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!state.user.canRetorno) {
+        showModal('Sin permiso de retorno',
+          'No tienes permiso para registrar retornos. Solicita el permiso "retorno_repuesto" a tu administrador.');
+        return;
+      }
+      const or = btn.dataset.or;
+      window.location.href = `${CONFIG.URL_RETORNO}?or=${encodeURIComponent(or)}`;
+    });
+  });
+}
+
+function applyFilters() {
+  const q = state.search.trim().toLowerCase();
+  let list = state.allOrders;
+
+  if (state.activeChip === 'mine') {
+    list = list.filter(o => o.retira_id === state.user.id_gl);
+  } else if (state.activeChip === 'alert') {
+    list = list.filter(o => o.days >= CONFIG.UMBRAL_ALERT);
+  }
+
+  if (q) {
+    list = list.filter(o =>
+      (o.codigoOR || '').toLowerCase().includes(q) ||
+      (o.placa || '').toLowerCase().includes(q) ||
+      (o.descripcion || '').toLowerCase().includes(q) ||
+      (o.proveedor || '').toLowerCase().includes(q) ||
+      (o.retira_nombre || '').toLowerCase().includes(q)
+    );
+  }
+
+  state.filtered = list;
+  renderCards();
+}
+
+async function refresh() {
+  $('#btn-refresh').classList.add('spinning');
+  try {
+    state.allOrders = await fetchOrders();
+    updateStats();
+    applyFilters();
+    const now = new Date();
+    $('#last-update-time').textContent = now.toTimeString().slice(0,5);
+    $('#last-update').hidden = false;
+  } catch (err) {
+    console.error('[Globeco]', err);
+    $('#cards-container').innerHTML = `<div class="alert error" style="margin:0;"><span class="icon">⚠️</span><span>No se pudo cargar la lista: ${escapeHtml(err.message)}</span></div>`;
+  } finally {
+    setTimeout(() => $('#btn-refresh').classList.remove('spinning'), 500);
+  }
+}
+
+// =============================================================
+// EVENT BINDINGS
+// =============================================================
+$('#btn-login').addEventListener('click', async () => {
+  const ced = $('#cedula-input').value;
+  $('#login-error').hidden = true;
+  try {
+    const user = await validateCedula(ced);
+    if (!user.canSalida && !user.canRetorno) {
+      // Tiene cédula pero no permisos
+      localStorage.removeItem(CONFIG.STORAGE_KEY);
+      state.user = user;
+      showScreen('screen-no-permission');
+      return;
+    }
+    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(user));
+    applyUser(user);
+    showScreen('screen-dashboard');
+    refresh();
+  } catch (err) {
+    $('#login-error-msg').textContent = err.message;
+    $('#login-error').hidden = false;
+    setTimeout(() => { $('#login-error').hidden = true; }, 5000);
+  }
+});
+$('#cedula-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#btn-login').click(); });
+
+$('#btn-logout').addEventListener('click', logout);
+$('#btn-logout-noperm').addEventListener('click', logout);
+$('#btn-refresh').addEventListener('click', refresh);
+
+$('#search-input').addEventListener('input', (e) => {
+  state.search = e.target.value;
+  applyFilters();
+});
+
+$('#chips-row').addEventListener('click', (e) => {
+  const chip = e.target.closest('.filter-chip');
+  if (!chip) return;
+  $$('.filter-chip').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  state.activeChip = chip.dataset.filter;
+  applyFilters();
+});
+
+$('#fab-new').addEventListener('click', () => {
+  if (!state.user.canSalida) {
+    showModal('Sin permiso de salida',
+      'No tienes permiso para registrar salidas. Solicita el permiso "salida_repuesto" a tu administrador.');
+    return;
+  }
+  window.location.href = CONFIG.URL_SALIDA;
+});
+
+$('#modal-close').addEventListener('click', hideModal);
+$('#modal-noperm').addEventListener('click', (e) => {
+  if (e.target.id === 'modal-noperm') hideModal();
+});
+
+// =============================================================
+// INIT
+// =============================================================
+(function init() {
+  try {
+    const saved = localStorage.getItem(CONFIG.STORAGE_KEY);
+    if (saved) {
+      const user = JSON.parse(saved);
+      if (user && user.cedula && (user.canSalida || user.canRetorno)) {
+        applyUser(user);
+        showScreen('screen-dashboard');
+        refresh();
+        return;
+      }
+    }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
 
